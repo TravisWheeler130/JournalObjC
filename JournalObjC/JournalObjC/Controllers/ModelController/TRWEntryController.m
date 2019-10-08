@@ -15,11 +15,13 @@ static NSString *const EntriesKeys = @"entries";
 @end
 
 @implementation TRWEntryController
-+ (TRWEntryController *)sharedInstance {
++ (TRWEntryController *)sharedController
+{
     static TRWEntryController *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedInstance = [TRWEntryController new];
+        [sharedInstance loadFromPersistentStorage];
     });
     return sharedInstance;
 }
@@ -30,7 +32,42 @@ static NSString *const EntriesKeys = @"entries";
     if (self)
     {
         _internalEntries= [NSMutableArray array];
-    } return self;
+    }
+    return self;
+}
+
+- (void)saveToPersistentStorage
+{
+    NSMutableArray *entryDictionaries = [NSMutableArray new];
+    
+    for (TRWEntry *entry in self.entries)
+    {
+        [entryDictionaries addObject:entry.dictionaryRepresentation];
+    }
+    
+    [[NSUserDefaults standardUserDefaults] setObject:entryDictionaries forKey:EntriesKeys];
+}
+
+- (void)loadFromPersistentStorage
+{
+    NSArray *entrydictionaries = [[NSUserDefaults standardUserDefaults] objectForKey:EntriesKeys];
+    for (NSDictionary *dictionary in entrydictionaries)
+    {
+        TRWEntry *entry = [[TRWEntry alloc] initWithDictionary:dictionary];
+        [self addEntriesObject:entry];
+    }
+}
+
+- (NSArray *)entries { return self.internalEntries; }
+
+- (void)addEntriesObject:(TRWEntry *)entry
+{
+    [self.internalEntries addObject:entry];
+}
+
+- (void)removeEntriesObject:(TRWEntry *)entry
+{
+    [self.internalEntries removeObject:entry];
 }
 
 @end

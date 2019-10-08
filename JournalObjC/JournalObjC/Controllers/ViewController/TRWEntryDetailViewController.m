@@ -7,8 +7,9 @@
 //
 
 #import "TRWEntryDetailViewController.h"
+#import "TRWEntryController.h"
 
-@interface TRWEntryDetailViewController ()
+@interface TRWEntryDetailViewController () <UITextFieldDelegate>
 @property (weak, nonatomic) IBOutlet UITextField *entryTitleTextField;
 @property (weak, nonatomic) IBOutlet UITextView *entryTextfield;
 
@@ -16,23 +17,55 @@
 
 @implementation TRWEntryDetailViewController
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-}
-- (IBAction)saveButtonTapped:(id)sender {
-}
-- (IBAction)clearButtonTapped:(id)sender {
+    [self updateViews];
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void)updateViews
+{
+    if (!self.entry) return;
+    
+    self.entryTitleTextField.text = self.entry.title;
+    self.entryTextfield.text = self.entry.text;
 }
-*/
+
+- (IBAction)saveButtonTapped:(id)sender
+{
+    if (self.entry)
+    {
+        self.entry.title = self.entryTitleTextField.text;
+        self.entry.text = self.entryTextfield.text;
+        self.entry.timeStamp = [NSDate date];
+    } else {
+        TRWEntry *entry = [[TRWEntry alloc] initWithTitle:self.entryTitleTextField.text text:self.entryTextfield.text timeStamp: [NSDate date]];
+        
+        [[TRWEntryController sharedController] addEntriesObject:entry];
+        self.entry = entry;
+    }
+    [self.navigationController popViewControllerAnimated:true];
+}
+
+- (IBAction)clearButtonTapped:(id)sender
+{
+    self.entryTitleTextField.text = @"";
+    self.entryTextfield.text = @"";
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    return YES;
+}
+
+- (void)setEntry:(TRWEntry *)entry
+{
+    if (entry != _entry)
+    {
+        _entry = entry;
+        [self updateViews];
+    }
+}
 
 @end

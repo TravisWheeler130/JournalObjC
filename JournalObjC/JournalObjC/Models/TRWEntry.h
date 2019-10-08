@@ -8,16 +8,15 @@
 
 #import <Foundation/Foundation.h>
 
-NS_ASSUME_NONNULL_BEGIN
-
 @interface TRWEntry : NSObject
 
-@property (nonatomic, copy, readonly) NSString * title;
-@property (nonatomic, copy, readonly) NSString * bodyText;
-@property (nonatomic, readonly) NSDate * timeStamp;
 
-- (instancetype)initWithTitle:(NSString *)title bodyText:(NSString *)bodyText;
+- (instancetype)initWithTitle:(NSString *)title text:(NSString *)text timeStamp:(NSDate *)timeStamp;
+- (instancetype)initWithDictionary:(NSDictionary *)dictionary;
+- (NSDictionary *)dictionaryRepresentation;
+
+@property (nonatomic, strong) NSString * title;
+@property (nonatomic, strong) NSString * text;
+@property (nonatomic, strong) NSDate * timeStamp;
 
 @end
-
-NS_ASSUME_NONNULL_END

@@ -9,15 +9,14 @@
 #import <Foundation/Foundation.h>
 #import "TRWEntry.h"
 
-NS_ASSUME_NONNULL_BEGIN
-
 @interface TRWEntryController : NSObject
 
 + (TRWEntryController *)sharedController;
+
+- (void)saveToPersistentStorage;
+
 @property(nonatomic,strong,readonly) NSArray * entries;
 -(void)addEntriesObject:(TRWEntry *)entry;
 -(void)removeEntriesObject:(TRWEntry *)entry;
 
 @end
-
-NS_ASSUME_NONNULL_END
